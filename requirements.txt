@@ -1,10 +1,18 @@
 streamlit==1.52.2
 pandas==2.3.3
+<<<<<<< HEAD
 numpy==2.4.1
 scikit-learn==1.8.0
 scipy==1.17.0
 plotly==5.24.0
 joblib==1.5.3
+=======
+numpy==2.3.5
+scikit-learn==1.7.2
+scipy==1.16.3
+plotly==6.5.1
+joblib==1.4.2
+>>>>>>> 06e404a (Resolve requirements.txt conflict)
 
 matplotlib>=3.8,<4
 seaborn>=0.13,<0.14
