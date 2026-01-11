@@ -1,17 +1,17 @@
-import warnings
 import io
+import warnings
 import zipfile
 from datetime import datetime
 
-warnings.filterwarnings("ignore")
-
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 from matplotlib.ticker import FuncFormatter
 from scipy import stats
+
+warnings.filterwarnings("ignore")
 
 # ==================== PAGE CONFIG ====================
 st.set_page_config(
@@ -198,6 +198,7 @@ if "gallery" not in st.session_state:
 if "export_dpi" not in st.session_state:
     st.session_state["export_dpi"] = 300
 
+
 # ==================== HELPERS ====================
 def use_theme(context: str = "notebook", style: str = "whitegrid", palette: str = "deep") -> None:
     sns.set_theme(context=context, style=style)
@@ -284,6 +285,7 @@ def show_code_example(code: str, description: str = "") -> None:
     st.markdown('<div class="code-box">', unsafe_allow_html=True)
     st.code(code, language="python")
     st.markdown("</div>", unsafe_allow_html=True)
+
 
 # ==================== HEADER ====================
 st.markdown(
@@ -752,9 +754,7 @@ with tab_seaborn:
                         hue=hue_col,
                         ax=ax,
                     )
-                    ax.yaxis.set_major_formatter(
-                        FuncFormatter(lambda y, _: f"{y:.0%}")
-                    )
+                    ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: f"{y:.0%}"))
 
                 ax.set_title(f"{kind} for {num_col}", fontsize=13, fontweight="bold")
                 apply_dark(fig_seaborn, DARK)
@@ -786,7 +786,9 @@ with tab_seaborn:
 sns.{fn}(data=df, x="{num_col}"{hue_part}{extra_kwargs}, ax=ax)
 ax.set_title("{kind} for {num_col}")
 plt.show()"""
-                description = "Distribution pattern: shape, spread, and tails of a single numeric column."
+                description = (
+                    "Distribution pattern: shape, spread, and tails of a single numeric column."
+                )
 
             # ------- Relationship -------
             elif family == "Relationship" and len(numeric_cols_all) >= 2 and x_rel is not None:
@@ -871,12 +873,7 @@ plt.show()"""
                 fig_seaborn, ax = plt.subplots(figsize=(10, 5))
 
                 df_tmp = df.copy()
-                top_cats = (
-                    df_tmp[cat_var]
-                    .value_counts()
-                    .head(order_top)
-                    .index
-                )
+                top_cats = df_tmp[cat_var].value_counts().head(order_top).index
                 df_tmp = df_tmp[df_tmp[cat_var].isin(top_cats)]
 
                 if cat_kind == "Count":
@@ -1244,9 +1241,9 @@ with tab_mpl:
 
                     code_mpl = f"""fig, ax = plt.subplots(figsize=(10, 5))
 ax.plot(
-    { 'np.arange(len(df))' if x_line == "index" else f'df["{x_line}"]' },
+    {"np.arange(len(df))" if x_line == "index" else f'df["{x_line}"]'},
     df["{y_line}"],
-    marker={'None' if marker == "None" else repr(marker)},
+    marker={"None" if marker == "None" else repr(marker)},
     lw=2,
 )
 ax.set_title("Line: {y_line} over {x_label}")
@@ -1317,7 +1314,11 @@ plt.show()"""
                         ax.set_ylabel(num_for_bar)
                         ax.set_xlabel(cat_for_bar)
                         plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
-                    ax.set_title(f"{agg_bar} of {num_for_bar} by {cat_for_bar}", fontsize=13, fontweight="bold")
+                    ax.set_title(
+                        f"{agg_bar} of {num_for_bar} by {cat_for_bar}",
+                        fontsize=13,
+                        fontweight="bold",
+                    )
                     ax.grid(axis="x" if horiz else "y", alpha=0.3)
                     apply_dark(fig_mpl, DARK)
                     st.pyplot(fig_mpl)
@@ -1352,7 +1353,7 @@ ax.hist(
 )
 ax.set_title("Histogram of {num_hist}")
 ax.set_xlabel("{num_hist}")
-ax.set_ylabel("{'Density' if density_hist else 'Count'}")
+ax.set_ylabel("{"Density" if density_hist else "Count"}")
 ax.grid(alpha=0.3)
 plt.show()"""
 
@@ -1373,7 +1374,7 @@ plt.show()"""
 
                     code_mpl = f"""fig, ax = plt.subplots(figsize=(10, 5))
 ax.boxplot(
-    [{', '.join([f'df["{c}"].dropna().values' for c in nums_box])}],
+    [{", ".join([f'df["{c}"].dropna().values' for c in nums_box])}],
     labels={nums_box},
 )
 ax.set_title("Box plots")
@@ -1406,7 +1407,7 @@ plt.show()"""
                     apply_dark(fig_mpl, DARK)
                     st.pyplot(fig_mpl)
 
-                    code_mpl = """cols = {cols}
+                    code_mpl = f"""cols = {nums_over}
 fig, axes = plt.subplots(1, len(cols), figsize=(4 * len(cols), 4), squeeze=False)
 for idx, name in enumerate(cols):
     ax = axes[0, idx]
@@ -1415,9 +1416,7 @@ for idx, name in enumerate(cols):
     ax.set_title(name)
     ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.show()""".format(
-                        cols=nums_over
-                    )
+plt.show()"""
 
             st.markdown("</div>", unsafe_allow_html=True)
 
@@ -1503,7 +1502,9 @@ with tab_compare:
                 st.pyplot(fig_m)
 
             if st.button("Save Seaborn comparison plot to gallery", key="cmp_dist_save"):
-                save_to_gallery(fig_s, "Compare: Distribution", "Seaborn vs Matplotlib distribution")
+                save_to_gallery(
+                    fig_s, "Compare: Distribution", "Seaborn vs Matplotlib distribution"
+                )
                 st.success("Saved Seaborn figure to gallery.")
 
         else:  # Relationship (scatter)
@@ -1564,7 +1565,9 @@ with tab_compare:
                     st.pyplot(fig_m2)
 
                 if st.button("Save Seaborn comparison plot to gallery", key="cmp_rel_save"):
-                    save_to_gallery(fig_s2, "Compare: Relationship", "Seaborn vs Matplotlib scatter")
+                    save_to_gallery(
+                        fig_s2, "Compare: Relationship", "Seaborn vs Matplotlib scatter"
+                    )
                     st.success("Saved Seaborn figure to gallery.")
 
 # ==================== TAB: GALLERY ====================
@@ -1593,7 +1596,7 @@ with tab_gallery:
                 zip_buf = io.BytesIO()
                 with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
                     for idx, item in enumerate(st.session_state["gallery"]):
-                        filename = f"{idx+1:02d}_{item['name'].replace(' ', '_')}.png"
+                        filename = f"{idx + 1:02d}_{item['name'].replace(' ', '_')}.png"
                         zf.writestr(filename, item["image"])
 
                 st.download_button(
@@ -1624,9 +1627,7 @@ with tab_gallery:
                         st.image(item["image"], use_container_width=True)
                         st.markdown(f"**{item['name']}**")
                         st.caption(item["description"])
-                        st.caption(
-                            f"Saved at {item['timestamp'].strftime('%Y-%m-%d %H:%M')}"
-                        )
+                        st.caption(f"Saved at {item['timestamp'].strftime('%Y-%m-%d %H:%M')}")
                         st.download_button(
                             "Download PNG",
                             data=item["image"],
