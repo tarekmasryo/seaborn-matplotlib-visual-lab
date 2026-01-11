@@ -1,53 +1,55 @@
 # 📊 Seaborn & Matplotlib Visual Lab
 
-[![Streamlit](https://img.shields.io/badge/Powered%20by-Streamlit-FF4B4B)](https://streamlit.io/)<br>
-[![Made with ❤️ by Tarek Masryo](https://img.shields.io/badge/Made%20by-Tarek%20Masryo-blue)](https://github.com/tarekmasryo)
+[![Streamlit](https://img.shields.io/badge/Powered%20by-Streamlit-FF4B4B)](https://streamlit.io/)
+[![Python](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](LICENSE)
+[![Made by Tarek Masryo](https://img.shields.io/badge/Made%20by-Tarek%20Masryo-blue)](https://github.com/tarekmasryo)
 
-An interactive **Streamlit** lab for learning and comparing **Seaborn** and **Matplotlib** — build plots from UI controls, see the code, and export clean PNGs.
+An interactive **Streamlit** lab for learning and comparing **Seaborn** and **Matplotlib** — build plots from UI controls, inspect the generated code, and export clean PNGs (or a ZIP gallery).
 
 ---
 
 ## 🧪 What this app does
 
-This app is a small **visual lab for plots**:
+This app is a **visual lab for plots**:
 
 - Load classic **Seaborn demo datasets** in one click (Tips, Penguins, Flights, Iris, Diamonds, Titanic, Car Crashes).
-- Build **Seaborn** charts (distribution, relationship, category, heatmaps, pairplots) through simple controls.
-- Recreate the same ideas with **Matplotlib** and see the low-level API.
-- Compare Seaborn vs Matplotlib **side by side** on the same pattern.
-- Save any figure to a **gallery** and export PNGs or a ZIP archive.
+- Build **Seaborn** charts (distribution, relationship, category, heatmaps, pairplots) through simple UI controls.
+- Recreate the same patterns with **Matplotlib** to understand the low-level API.
+- Compare Seaborn vs Matplotlib **side by side** on the same visualization idea.
+- Save figures to a **gallery** and export PNGs or a ZIP archive.
 
 Perfect for **learning**, **teaching**, and **quick EDA prototypes**.
 
 ---
 
-## 🧭 App Structure
+## 🧭 App structure
 
 | Tab | Purpose |
 |:---|:--------|
-| **Overview** | Quick health check: sample, types, missingness, and a small correlation heatmap. |
-| **Seaborn builder** | UI-driven Seaborn plots with auto-updating Python snippets. |
+| **Overview** | Quick dataset health check: sample, dtypes, missingness, and a small correlation view. |
+| **Seaborn builder** | UI-driven Seaborn plots + auto-updating Python snippet. |
 | **Matplotlib builder** | Low-level Matplotlib plots with control over axes, grids, and layout. |
 | **Compare** | Same idea shown once with Seaborn and once with Matplotlib. |
 | **Gallery** | Saved figures, PNG download, and ZIP export. |
 
 ---
 
-## 📚 Data Sources
+## 📚 Data sources
 
-All datasets come from **Seaborn’s built-in catalog**, no external files needed:
+All datasets come from **Seaborn’s built-in catalog** (no external files needed):
 
 - `tips`
 - `penguins` (cleaned)
 - `flights`
 - `iris`
-- `diamonds` (1K sample)
+- `diamonds` (sample)
 - `titanic`
 - `car_crashes`
 
 ---
 
-## 📸 Dashboard Preview
+## 📸 Dashboard preview
 
 ### 1️⃣ Seaborn — Distribution Builder (Tips)
 
@@ -97,35 +99,104 @@ All datasets come from **Seaborn’s built-in catalog**, no external files neede
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick start (local)
+
+### Option A — Windows (PowerShell)
 
 ```bash
-# clone the repo
 git clone https://github.com/tarekmasryo/seaborn-matplotlib-visual-lab.git
 cd seaborn-matplotlib-visual-lab
 
-# (optional) create venv
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# Linux / macOS
+py -3.11 -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+
+python -m pip install -U pip
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
+
+python -m streamlit run app.py
+```
+
+Open: http://localhost:8501
+
+### Option B — Linux / macOS
+
+```bash
+git clone https://github.com/tarekmasryo/seaborn-matplotlib-visual-lab.git
+cd seaborn-matplotlib-visual-lab
+
+python3 -m venv .venv
 source .venv/bin/activate
 
-# install dependencies
-pip install -r requirements.txt
+python -m pip install -U pip
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 
-# run the app
-streamlit run app.py
-
+python -m streamlit run app.py
 ```
 
 ---
 
-## 💡 When is this useful?
+## ✅ Development workflow (the kit)
 
-- Teaching Seaborn vs Matplotlib in workshops or classes.
-- Trying different plot families **before** copying code into a notebook.
-- Building small **code snippets** for reports, blogs, or EDA templates.
-- Playing with themes, palettes, and structures without editing Python by hand.
+This repo ships with a lightweight **quality kit**:
+- **ruff** for linting/formatting
+- **pytest** for tests (smoke checks)
+- **pre-commit** hooks to enforce style locally
+- **GitHub Actions** workflow(s) under `.github/workflows/` to run checks on PRs
 
-If you enjoy the lab, consider giving the repo a ⭐ to support more visual tools like this.
+### Lint & format
+
+```bash
+python -m ruff check . --fix
+python -m ruff format .
+```
+
+### Tests
+
+```bash
+python -m pytest -q
+```
+
+### Pre-commit (recommended)
+
+```bash
+pre-commit install
+pre-commit run --all-files
+```
+
+---
+
+## 📁 Project structure
+
+```text
+.
+├─ app.py
+├─ requirements.txt
+├─ requirements-dev.txt
+├─ tests/
+├─ assets/                 # README screenshots
+└─ .github/workflows/      # CI pipelines (optional)
+```
+
+---
+
+## 🧠 Notes (production-minded)
+
+- Keep heavy computation inside functions (avoid expensive work at import-time).
+  This keeps tests fast and avoids slow CI runs.
+- Major dependency bumps (e.g., Plotly 5 → 6) should be validated by running the app
+  and checking all chart tabs before merging.
+
+---
+
+## 📜 License
+
+Apache-2.0 — see [LICENSE](LICENSE).
+
+---
+
+## 👤 Author
+
+Tarek Masryo
