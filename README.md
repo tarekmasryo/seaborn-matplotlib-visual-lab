@@ -137,7 +137,7 @@ pre-commit run --all-files
 
 ## 🧩 Case study
 
-Read the engineering-focused write-up: [CASE_STUDY.md](CASE_STUDY.md).
+Read the case study: [CASE_STUDY.md](CASE_STUDY.md)
 
 ---
 
