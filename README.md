@@ -3,23 +3,20 @@
 [![Streamlit](https://img.shields.io/badge/Powered%20by-Streamlit-FF4B4B)](https://streamlit.io/)
 [![Python](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](LICENSE)
-[![Made by Tarek Masryo](https://img.shields.io/badge/Made%20by-Tarek%20Masryo-blue)](https://github.com/tarekmasryo)
 
-An interactive **Streamlit** lab for learning and comparing **Seaborn** and **Matplotlib** — build plots from UI controls, inspect the generated code, and export clean PNGs (or a ZIP gallery).
+An interactive **Streamlit** lab to learn and compare **Seaborn** and **Matplotlib**. Build plots from UI controls, inspect the generated code, and export clean PNGs (or a ZIP gallery).
 
 ---
 
 ## 🧪 What this app does
 
-This app is a **visual lab for plots**:
-
 - Load classic **Seaborn demo datasets** in one click (Tips, Penguins, Flights, Iris, Diamonds, Titanic, Car Crashes).
-- Build **Seaborn** charts (distribution, relationship, category, heatmaps, pairplots) through simple UI controls.
-- Recreate the same patterns with **Matplotlib** to understand the low-level API.
-- Compare Seaborn vs Matplotlib **side by side** on the same visualization idea.
+- Build **Seaborn** charts (distribution, relationship, category, heatmaps, pairplots) using simple controls.
+- Recreate the same ideas with **Matplotlib** to understand the low-level API.
+- Compare **Seaborn vs Matplotlib** side by side.
 - Save figures to a **gallery** and export PNGs or a ZIP archive.
 
-Perfect for **learning**, **teaching**, and **quick EDA prototypes**.
+**Offline-friendly:** if Seaborn’s online dataset catalog is unavailable, the app falls back to a small built-in dataset to keep the UI usable.
 
 ---
 
@@ -27,20 +24,20 @@ Perfect for **learning**, **teaching**, and **quick EDA prototypes**.
 
 | Tab | Purpose |
 |:---|:--------|
-| **Overview** | Quick dataset health check: sample, dtypes, missingness, and a small correlation view. |
+| **Overview** | Dataset health check: sample, dtypes, missingness, and a small correlation view. |
 | **Seaborn builder** | UI-driven Seaborn plots + auto-updating Python snippet. |
 | **Matplotlib builder** | Low-level Matplotlib plots with control over axes, grids, and layout. |
-| **Compare** | Same idea shown once with Seaborn and once with Matplotlib. |
+| **Compare** | Same visualization idea shown with Seaborn and Matplotlib. |
 | **Gallery** | Saved figures, PNG download, and ZIP export. |
 
 ---
 
 ## 📚 Data sources
 
-All datasets come from **Seaborn’s built-in catalog** (no external files needed):
+Datasets are pulled from **Seaborn’s built-in catalog**:
 
 - `tips`
-- `penguins` (cleaned)
+- `penguins`
 - `flights`
 - `iris`
 - `diamonds` (sample)
@@ -51,50 +48,20 @@ All datasets come from **Seaborn’s built-in catalog** (no external files neede
 
 ## 📸 Dashboard preview
 
-### 1️⃣ Seaborn — Distribution Builder (Tips)
-
 <p align="center">
-  <img src="assets/seaborn-tips-total-bill-hist-sex.png" alt="Seaborn histogram of total_bill by sex from the tips dataset" />
+  <img src="assets/seaborn-tips-total-bill-hist-sex.png" alt="Seaborn histogram (tips dataset)" />
 </p>
 
----
-
-### 2️⃣ Seaborn — Relationship Builder (Tips)
-
 <p align="center">
-  <img src="assets/seaborn-tips-total-bill-vs-tip-scatter.png" alt="Seaborn scatter plot of total_bill vs tip from the tips dataset" />
+  <img src="assets/seaborn-tips-total-bill-vs-tip-scatter.png" alt="Seaborn scatter (tips dataset)" />
 </p>
 
----
-
-### 3️⃣ Matplotlib — Histogram (Iris)
-
 <p align="center">
-  <img src="assets/matplotlib-iris-sepal-length-hist.png" alt="Matplotlib histogram of sepal length from the iris dataset" />
+  <img src="assets/matplotlib-iris-sepal-length-hist.png" alt="Matplotlib histogram (iris dataset)" />
 </p>
 
----
-
-### 4️⃣ Matplotlib — Line Plot (Iris)
-
 <p align="center">
-  <img src="assets/matplotlib-iris-sepal-length-line.png" alt="Matplotlib line plot of sepal length over index from the iris dataset" />
-</p>
-
----
-
-### 5️⃣ Compare — Histogram + KDE (Tips)
-
-<p align="center">
-  <img src="assets/compare-hist-kde-tips.png" alt="Compare tab showing Seaborn vs Matplotlib histogram + KDE for the tips dataset" />
-</p>
-
----
-
-### 6️⃣ Compare — Scatter (Flights)
-
-<p align="center">
-  <img src="assets/compare-scatter-flights.png" alt="Compare tab showing Seaborn vs Matplotlib scatter plot for the flights dataset" />
+  <img src="assets/compare-hist-kde-tips.png" alt="Compare: Seaborn vs Matplotlib histogram + KDE (tips)" />
 </p>
 
 ---
@@ -115,7 +82,7 @@ python -m pip install -U pip
 python -m pip install -r requirements.txt
 python -m pip install -r requirements-dev.txt
 
-python -m streamlit run app.py
+streamlit run app.py
 ```
 
 Open: http://localhost:8501
@@ -133,18 +100,18 @@ python -m pip install -U pip
 python -m pip install -r requirements.txt
 python -m pip install -r requirements-dev.txt
 
-python -m streamlit run app.py
+streamlit run app.py
 ```
 
 ---
 
-## ✅ Development workflow (the kit)
+## ✅ Tooling & workflow
 
-This repo ships with a lightweight **quality kit**:
+This repo ships with lightweight quality gates:
 - **ruff** for linting/formatting
-- **pytest** for tests (smoke checks)
-- **pre-commit** hooks to enforce style locally
-- **GitHub Actions** workflow(s) under `.github/workflows/` to run checks on PRs
+- **pytest** for smoke tests
+- **pre-commit** hooks for local consistency
+- **GitHub Actions** workflows under `.github/workflows/` to validate PRs
 
 ### Lint & format
 
@@ -168,6 +135,23 @@ pre-commit run --all-files
 
 ---
 
+## 🧩 Case study
+
+Read the engineering-focused write-up: [CASE_STUDY.md](CASE_STUDY.md).
+
+---
+
+## 📦 Docker (optional)
+
+```bash
+docker build -t visual-lab .
+docker run -p 8501:8501 visual-lab
+```
+
+Open: http://localhost:8501
+
+---
+
 ## 📁 Project structure
 
 ```text
@@ -177,17 +161,15 @@ pre-commit run --all-files
 ├─ requirements-dev.txt
 ├─ tests/
 ├─ assets/                 # README screenshots
-└─ .github/workflows/      # CI pipelines (optional)
+└─ .github/workflows/      # CI pipelines
 ```
 
 ---
 
 ## 🧠 Notes (production-minded)
 
-- Keep heavy computation inside functions (avoid expensive work at import-time).
-  This keeps tests fast and avoids slow CI runs.
-- Major dependency bumps (e.g., Plotly 5 → 6) should be validated by running the app
-  and checking all chart tabs before merging.
+- Avoid expensive work at import-time; keep heavy work inside functions. This keeps tests fast and CI stable.
+- For major dependency bumps, run the app and click through all tabs before merging.
 
 ---
 
