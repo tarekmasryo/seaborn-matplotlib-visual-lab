@@ -166,8 +166,7 @@ Open: http://localhost:8501
 
 ---
 
-## 🧠 Notes (production-minded)
-
+## 🧠 Notes 
 - Avoid expensive work at import-time; keep heavy work inside functions. This keeps tests fast and CI stable.
 - For major dependency bumps, run the app and click through all tabs before merging.
 
