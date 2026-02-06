@@ -426,7 +426,7 @@ with tab_overview:
 
     with col_left:
         st.markdown("### Sample")
-        st.dataframe(df.head(10), use_container_width=True)
+        st.dataframe(df.head(10), width="stretch")
 
         if numeric_cols_all:
             st.markdown("### Quick distribution")
@@ -449,7 +449,7 @@ with tab_overview:
             "missing_%": (df.isna().mean() * 100).round(1),
         }
         schema_df = pd.DataFrame(schema_data)
-        st.dataframe(schema_df, height=260, use_container_width=True)
+        st.dataframe(schema_df, height=260, width="stretch")
 
         if len(numeric_cols_all) >= 2:
             st.markdown("### Small correlation view")
@@ -1592,7 +1592,7 @@ with tab_gallery:
         col_zip, col_clear, _ = st.columns([2, 2, 1])
 
         with col_zip:
-            if st.button("Prepare ZIP archive", key="gal_zip_btn", use_container_width=True):
+            if st.button("Prepare ZIP archive", key="gal_zip_btn", width="stretch"):
                 zip_buf = io.BytesIO()
                 with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
                     for idx, item in enumerate(st.session_state["gallery"]):
@@ -1604,12 +1604,12 @@ with tab_gallery:
                     data=zip_buf.getvalue(),
                     file_name=f"visual_lab_gallery_{datetime.now():%Y%m%d_%H%M%S}.zip",
                     mime="application/zip",
-                    use_container_width=True,
+                    width="stretch",
                     key="gal_zip_dl",
                 )
 
         with col_clear:
-            if st.button("Clear gallery", key="gal_clear_btn", use_container_width=True):
+            if st.button("Clear gallery", key="gal_clear_btn", width="stretch"):
                 st.session_state["gallery"] = []
                 st.rerun()
 
@@ -1624,7 +1624,7 @@ with tab_gallery:
                     item = st.session_state["gallery"][item_idx]
                     with c:
                         st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                        st.image(item["image"], use_container_width=True)
+                        st.image(item["image"], width="stretch")
                         st.markdown(f"**{item['name']}**")
                         st.caption(item["description"])
                         st.caption(f"Saved at {item['timestamp'].strftime('%Y-%m-%d %H:%M')}")
@@ -1634,7 +1634,7 @@ with tab_gallery:
                             file_name=f"{item['name'].replace(' ', '_')}.png",
                             mime="image/png",
                             key=f"gal_dl_{item_idx}",
-                            use_container_width=True,
+                            width="stretch",
                         )
                         st.markdown("</div>", unsafe_allow_html=True)
 
