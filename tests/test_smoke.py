@@ -1,7 +1,11 @@
 import importlib
-import importlib.util
 import os
+import py_compile
 import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def _parse_version(v: str) -> tuple[int, int]:
@@ -18,10 +22,11 @@ def test_smoke_python_version():
 
 def test_smoke_core_imports():
     """
-    Fast fail if core dependencies are broken.
+    Fast fail if selected dependencies are broken.
 
+    Keep this opt-in so local syntax checks remain fast and deterministic.
     Configure via:
-      SMOKE_IMPORTS="numpy,pandas,sklearn,streamlit,plotly"
+      SMOKE_IMPORTS="numpy,pandas,streamlit,matplotlib,seaborn,scipy"
     """
     imports = os.getenv("SMOKE_IMPORTS", "")
     if not imports.strip():
@@ -33,7 +38,8 @@ def test_smoke_core_imports():
 
 def test_smoke_project_module_importable():
     """
-    Ensure the main project module imports.
+    Optional package-level import check.
+
     Configure via:
       PROJECT_MODULE="your_package_name"
     """
@@ -43,21 +49,11 @@ def test_smoke_project_module_importable():
     importlib.import_module(module)
 
 
-def test_smoke_app_importable():
+def test_smoke_app_syntax_compiles():
     """
-    Importing the app module should not execute heavy work at import-time.
+    Streamlit apps execute UI code at module import time.
 
-    This kit doesn't ship `app.py` because it varies per project. So we:
-    - Try to import the module if present
-    - Otherwise, skip silently (new project will add app.py later)
-
-    Override via:
-      APP_MODULE="app"  (default)
+    Validate syntax without importing app.py, so CI does not depend on network-backed
+    dataset loading, Streamlit runtime state, or sidebar execution side effects.
     """
-    app_module = os.getenv("APP_MODULE", "app").strip()
-
-    # If the module isn't present yet, skip.
-    if importlib.util.find_spec(app_module) is None:
-        return
-
-    importlib.import_module(app_module)
+    py_compile.compile(str(ROOT / "app.py"), doraise=True)

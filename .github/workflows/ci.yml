@@ -49,6 +49,8 @@ jobs:
           python -m ruff format --check .
 
       - name: Pytest
+        env:
+          SMOKE_IMPORTS: numpy,pandas,streamlit,matplotlib,seaborn,scipy
         run: python -m pytest -q
 
       - name: Docker present?

@@ -15,8 +15,8 @@ Learning data visualization is usually split between two extremes: high-level Se
 - Gallery tab to save figures and export PNGs or a ZIP bundle.
 
 ## Key Decisions
-- **One-click datasets:** load classic Seaborn demo datasets (tips, penguins, flights, iris, diamonds sample, titanic, car_crashes).
-- **Offline-friendly fallback:** if Seaborn’s online dataset catalog is unavailable, fall back to a small built-in dataset to keep the UI usable.
+- **One-click datasets:** load classic Seaborn example datasets (tips, penguins, flights, iris, diamonds sample, titanic, car_crashes).
+- **Offline-friendly fallback:** if Seaborn’s online dataset catalog cannot be reached, fall back to a small built-in dataset to keep the UI usable.
 - **Export-first design:** every chart can be saved to a local gallery and exported (PNG / ZIP) without manual code edits.
 - **Production hygiene:** Ruff + pytest + pre-commit + GitHub Actions for consistent formatting and smoke tests.
 
@@ -29,6 +29,6 @@ An interactive visualization lab that supports:
 - Gallery + PNG/ZIP export for sharing and documentation
 
 ## Next Steps
-- Add user CSV upload + schema preview (keep the demo datasets as presets).
+- Add user CSV upload + schema preview (keep the example datasets as presets).
 - Add “style presets” (publication, dark, minimal) and figure templates.
 - Add a lightweight report export (HTML/PDF) that bundles selected gallery figures + captions.

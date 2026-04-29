@@ -10,13 +10,13 @@ An interactive **Streamlit** lab to learn and compare **Seaborn** and **Matplotl
 
 ## 🧪 What this app does
 
-- Load classic **Seaborn demo datasets** in one click (Tips, Penguins, Flights, Iris, Diamonds, Titanic, Car Crashes).
+- Load classic **Seaborn example datasets** in one click (Tips, Penguins, Flights, Iris, Diamonds, Titanic, Car Crashes).
 - Build **Seaborn** charts (distribution, relationship, category, heatmaps, pairplots) using simple controls.
 - Recreate the same ideas with **Matplotlib** to understand the low-level API.
 - Compare **Seaborn vs Matplotlib** side by side.
 - Save figures to a **gallery** and export PNGs or a ZIP archive.
 
-**Offline-friendly:** if Seaborn’s online dataset catalog is unavailable, the app falls back to a small built-in dataset to keep the UI usable.
+**Offline-friendly:** if Seaborn’s online dataset catalog cannot be reached, the app falls back to a small built-in dataset to keep the UI usable.
 
 ---
 
@@ -159,6 +159,7 @@ Open: http://localhost:8501
 ├─ app.py
 ├─ requirements.txt
 ├─ requirements-dev.txt
+├─ CHANGELOG.md
 ├─ tests/
 ├─ assets/                 # README screenshots
 └─ .github/workflows/      # CI pipelines
@@ -166,7 +167,7 @@ Open: http://localhost:8501
 
 ---
 
-## 🧠 Notes 
+## 🧠 Notes
 - Avoid expensive work at import-time; keep heavy work inside functions. This keeps tests fast and CI stable.
 - For major dependency bumps, run the app and click through all tabs before merging.
 

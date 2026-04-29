@@ -242,17 +242,86 @@ def apply_dark(fig: plt.Figure, dark: bool = False) -> None:
                 text.set_color("#e5e7eb")
 
 
-@st.cache_data
-def load_builtin_data() -> dict:
-    return {
-        "Tips": sns.load_dataset("tips"),
-        "Penguins": sns.load_dataset("penguins").dropna(),
-        "Flights": sns.load_dataset("flights"),
-        "Iris": sns.load_dataset("iris"),
-        "Diamonds (1K sample)": sns.load_dataset("diamonds").sample(1000, random_state=42),
-        "Titanic": sns.load_dataset("titanic"),
-        "Car Crashes": sns.load_dataset("car_crashes"),
+def build_fallback_dataset(n_rows: int = 240, seed: int = 42) -> pd.DataFrame:
+    """Create a small deterministic dataset when Seaborn example data cannot be reached."""
+    rng = np.random.default_rng(seed)
+    groups = rng.choice(
+        ["Group A", "Group B", "Group C"],
+        size=n_rows,
+        p=[0.42, 0.34, 0.24],
+    )
+    channel = rng.choice(["Online", "Retail"], size=n_rows, p=[0.58, 0.42])
+    weekday = rng.choice(
+        ["Thu", "Fri", "Sat", "Sun"],
+        size=n_rows,
+        p=[0.22, 0.24, 0.31, 0.23],
+    )
+    score = rng.normal(68, 12, size=n_rows).clip(25, 99)
+    value = (
+        score * rng.normal(1.8, 0.25, size=n_rows)
+        + rng.normal(0, 9, size=n_rows)
+    ).clip(5, None)
+    uplift = (0.12 * value + rng.normal(6, 2.5, size=n_rows)).clip(0.5, None)
+    volume = rng.integers(1, 7, size=n_rows)
+
+    return pd.DataFrame(
+        {
+            "group": groups,
+            "channel": channel,
+            "day": weekday,
+            "score": score.round(2),
+            "value": value.round(2),
+            "uplift": uplift.round(2),
+            "volume": volume,
+            "conversion": rng.choice(["Yes", "No"], size=n_rows, p=[0.36, 0.64]),
+        }
+    )
+
+
+def load_seaborn_dataset(
+    dataset_name: str,
+    *,
+    drop_missing: bool = False,
+    sample_size: int | None = None,
+) -> tuple[pd.DataFrame, bool]:
+    """Load a Seaborn dataset and return whether the fallback was used."""
+    try:
+        loaded = sns.load_dataset(dataset_name)
+        if drop_missing:
+            loaded = loaded.dropna()
+        if sample_size is not None and len(loaded) > sample_size:
+            loaded = loaded.sample(sample_size, random_state=42)
+        return loaded.reset_index(drop=True), False
+    except Exception:
+        return build_fallback_dataset(), True
+
+
+@st.cache_data(show_spinner=False)
+def load_builtin_data() -> tuple[dict[str, pd.DataFrame], list[str]]:
+    dataset_specs = {
+        "Tips": ("tips", False, None),
+        "Penguins": ("penguins", True, None),
+        "Flights": ("flights", False, None),
+        "Iris": ("iris", False, None),
+        "Diamonds (1K sample)": ("diamonds", False, 1000),
+        "Titanic": ("titanic", False, None),
+        "Car Crashes": ("car_crashes", False, None),
     }
+
+    datasets: dict[str, pd.DataFrame] = {}
+    fallback_labels: list[str] = []
+
+    for label, (source_name, drop_missing, sample_size) in dataset_specs.items():
+        dataset, used_fallback = load_seaborn_dataset(
+            source_name,
+            drop_missing=drop_missing,
+            sample_size=sample_size,
+        )
+        datasets[label] = dataset
+        if used_fallback:
+            fallback_labels.append(label)
+
+    return datasets, fallback_labels
 
 
 def save_to_gallery(fig: plt.Figure, name: str, description: str) -> None:
@@ -302,9 +371,15 @@ with st.sidebar:
     st.markdown("### Data settings")
 
     # Built-in datasets only
-    builtin = load_builtin_data()
+    builtin, fallback_labels = load_builtin_data()
+    if fallback_labels:
+        st.warning(
+            "Some Seaborn example datasets could not be reached. "
+            "Fallback sample data is being used for: "
+            + ", ".join(fallback_labels)
+        )
     dataset_label = st.selectbox(
-        "Built-in only",
+        "Dataset preset",
         list(builtin.keys()),
         key="sb_dataset",
     )
