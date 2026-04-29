@@ -257,10 +257,9 @@ def build_fallback_dataset(n_rows: int = 240, seed: int = 42) -> pd.DataFrame:
         p=[0.22, 0.24, 0.31, 0.23],
     )
     score = rng.normal(68, 12, size=n_rows).clip(25, 99)
-    value = (
-        score * rng.normal(1.8, 0.25, size=n_rows)
-        + rng.normal(0, 9, size=n_rows)
-    ).clip(5, None)
+    value = (score * rng.normal(1.8, 0.25, size=n_rows) + rng.normal(0, 9, size=n_rows)).clip(
+        5, None
+    )
     uplift = (0.12 * value + rng.normal(6, 2.5, size=n_rows)).clip(0.5, None)
     volume = rng.integers(1, 7, size=n_rows)
 
@@ -375,8 +374,7 @@ with st.sidebar:
     if fallback_labels:
         st.warning(
             "Some Seaborn example datasets could not be reached. "
-            "Fallback sample data is being used for: "
-            + ", ".join(fallback_labels)
+            "Fallback sample data is being used for: " + ", ".join(fallback_labels)
         )
     dataset_label = st.selectbox(
         "Dataset preset",

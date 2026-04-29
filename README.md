@@ -162,7 +162,7 @@ Open: http://localhost:8501
 ├─ CHANGELOG.md
 ├─ tests/
 ├─ assets/                 # README screenshots
-└─ .github/workflows/      # CI pipelines
+└─ .github/workflows/      # CI workflow
 ```
 
 ---
@@ -181,4 +181,6 @@ Apache-2.0 — see [LICENSE](LICENSE).
 
 ## 👤 Author
 
-Tarek Masryo
+**Tarek Masryo** — AI/ML Engineer
+
+GitHub: [@tarekmasryo](https://github.com/tarekmasryo) · Kaggle: [@tarekmasryo](https://www.kaggle.com/tarekmasryo) · Portfolio: [tarekmasryo.github.io](https://tarekmasryo.github.io)

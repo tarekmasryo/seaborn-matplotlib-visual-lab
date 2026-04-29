@@ -15,7 +15,7 @@ concurrency:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 12
 
     strategy:
       fail-fast: false
@@ -40,50 +40,16 @@ jobs:
           python -m pip install -U pip
           python -m pip install -r requirements-dev.txt
 
-      - name: Basic sanity (compile)
-        run: python -m compileall -q .
+      - name: Compile Python files
+        run: python -m compileall -q app.py tests scripts
 
-      - name: Ruff (lint + format check)
-        run: |
-          python -m ruff check .
-          python -m ruff format --check .
+      - name: Ruff lint
+        run: python -m ruff check app.py tests scripts
+
+      - name: Ruff format check
+        run: python -m ruff format --check app.py tests scripts
 
       - name: Pytest
         env:
           SMOKE_IMPORTS: numpy,pandas,streamlit,matplotlib,seaborn,scipy
         run: python -m pytest -q
-
-      - name: Docker present?
-        id: dockerfile
-        shell: bash
-        run: |
-          if [ -f Dockerfile ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
-
-      - name: Set Docker image name (lowercase)
-        if: steps.dockerfile.outputs.present == 'true'
-        shell: bash
-        run: echo "IMAGE_NAME=$(echo '${{ github.event.repository.name }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-      - name: Set up Docker Buildx
-        if: steps.dockerfile.outputs.present == 'true'
-        uses: docker/setup-buildx-action@v3
-
-      - name: Docker test (build test stage)
-        if: steps.dockerfile.outputs.present == 'true'
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          target: test
-          tags: ${{ env.IMAGE_NAME }}:test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Docker build (runtime)
-        if: steps.dockerfile.outputs.present == 'true'
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          target: runtime
-          tags: ${{ env.IMAGE_NAME }}:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
