@@ -11,7 +11,7 @@ help:
 	@echo "  lint         Run ruff lint"
 	@echo "  lint-fix     Run ruff lint with fixes"
 	@echo "  format       Format code with ruff"
-	@echo "  check        Lint + format check + tests"
+	@echo "  check        Compile + lint + format check + tests"
 	@echo "  test         Run pytest"
 	@echo "  precommit    Install pre-commit hooks"
 
@@ -42,11 +42,13 @@ format:
 	$(PY) -m ruff format .
 
 test:
-	$(PY) -m pytest -q
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 $(PY) -m pytest tests -q
 
-check: lint
+check:
+	$(PY) -m compileall -q app.py visual_lab_core.py tests scripts
+	$(PY) -m ruff check .
 	$(PY) -m ruff format --check .
-	$(PY) -m pytest -q
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 $(PY) -m pytest tests -q
 
 precommit:
 	$(PY) -m pip install -U pre-commit

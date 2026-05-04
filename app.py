@@ -11,7 +11,9 @@ import streamlit as st
 from matplotlib.ticker import FuncFormatter
 from scipy import stats
 
-warnings.filterwarnings("ignore")
+from visual_lab_core import capped_sample_size, pairplot_sample_bounds
+
+warnings.filterwarnings("ignore", category=FutureWarning, module="seaborn")
 
 # ==================== PAGE CONFIG ====================
 st.set_page_config(
@@ -751,11 +753,14 @@ with tab_seaborn:
                         default=numeric_cols_all[: min(4, len(numeric_cols_all))],
                         key="sb_multi_vars",
                     )
+                min_sample_rows, max_sample_rows, default_sample_rows = pairplot_sample_bounds(
+                    len(df)
+                )
                 sample_n = st.slider(
                     "Sample rows",
-                    100,
-                    min(len(df), 1000),
-                    min(400, len(df)),
+                    min_value=min_sample_rows,
+                    max_value=max_sample_rows,
+                    value=default_sample_rows,
                     key="sb_multi_sample",
                 )
                 hue_multi = None
@@ -965,7 +970,7 @@ plt.show()"""
                         x=num_cat,
                         order=top_cats,
                         ax=ax,
-                        ci=95,
+                        errorbar=("ci", 95),
                     )
                 elif cat_kind == "Box":
                     sns.boxplot(
@@ -1007,7 +1012,7 @@ sns.barplot(
     data=df,
     y="{cat_var}",
     x="{num_cat}",
-    ci=95,
+    errorbar=("ci", 95),
     ax=ax,
 )
 ax.set_title("Mean {num_cat} by {cat_var}")
@@ -1073,26 +1078,38 @@ plt.show()"""
 
             # ------- Multi-variable (pairplot) -------
             elif family == "Multi-variable" and multi_vars:
-                sample_size = min(sample_n, len(df))
                 cols_to_use = multi_vars + ([hue_multi] if hue_multi else [])
-                df_sample = df[cols_to_use].dropna().sample(sample_size, random_state=42)
+                df_pairplot = df[cols_to_use].dropna()
+                sample_size = capped_sample_size(sample_n, len(df_pairplot))
 
-                with st.spinner("Building pairplot..."):
-                    g = sns.pairplot(
-                        df_sample,
-                        vars=multi_vars,
-                        hue=hue_multi,
-                        corner=True,
-                        diag_kind="kde",
-                        plot_kws={"alpha": 0.6},
-                        diag_kws={"alpha": 0.7},
-                    )
-                    g.fig.suptitle("Pairplot", y=1.01, fontweight="bold")
-                    fig_seaborn = g.fig
-                    apply_dark(fig_seaborn, DARK)
-                    st.pyplot(fig_seaborn)
+                if sample_size == 0:
+                    st.warning("Not enough non-missing rows to build this pairplot.")
+                    code_str = f"""cols = {cols_to_use}
+sample = df[cols].dropna()
+if sample.empty:
+    print("Not enough non-missing rows to build this pairplot.")"""
+                    description = "Multi-variable view: pairplots need non-missing rows across all selected variables."
+                else:
+                    df_sample = df_pairplot.sample(sample_size, random_state=42)
 
-                code_str = f"""sample = df[{multi_vars + ([hue_multi] if hue_multi else [])}].dropna().sample({sample_n}, random_state=42)
+                    with st.spinner("Building pairplot..."):
+                        g = sns.pairplot(
+                            df_sample,
+                            vars=multi_vars,
+                            hue=hue_multi,
+                            corner=True,
+                            diag_kind="kde",
+                            plot_kws={"alpha": 0.6},
+                            diag_kws={"alpha": 0.7},
+                        )
+                        g.fig.suptitle("Pairplot", y=1.01, fontweight="bold")
+                        fig_seaborn = g.fig
+                        apply_dark(fig_seaborn, DARK)
+                        st.pyplot(fig_seaborn)
+
+                    code_str = f"""cols = {cols_to_use}
+sample = df[cols].dropna()
+sample = sample.sample(min({sample_n}, len(sample)), random_state=42)
 g = sns.pairplot(
     sample,
     vars={multi_vars},
@@ -1103,7 +1120,7 @@ g = sns.pairplot(
 )
 g.fig.suptitle("Pairplot", y=1.01)
 plt.show()"""
-                description = "Multi-variable view: every pair of variables in one grid."
+                    description = "Multi-variable view: every pair of variables in one grid."
 
             st.markdown("</div>", unsafe_allow_html=True)
 

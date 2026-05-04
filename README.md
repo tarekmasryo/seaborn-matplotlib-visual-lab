@@ -4,15 +4,15 @@
 [![Python](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](LICENSE)
 
-An interactive **Streamlit** lab to learn and compare **Seaborn** and **Matplotlib**. Build plots from UI controls, inspect the generated code, and export clean PNGs (or a ZIP gallery).
+An interactive **Streamlit** lab to learn and compare **Seaborn** and **Matplotlib**. Build plots from UI controls, inspect the generated code, and export clean PNGs or a ZIP gallery.
 
 ---
 
 ## 🧪 What this app does
 
-- Load classic **Seaborn example datasets** in one click (Tips, Penguins, Flights, Iris, Diamonds, Titanic, Car Crashes).
-- Build **Seaborn** charts (distribution, relationship, category, heatmaps, pairplots) using simple controls.
-- Recreate the same ideas with **Matplotlib** to understand the low-level API.
+- Load classic **Seaborn example datasets** in one click: Tips, Penguins, Flights, Iris, Diamonds, Titanic, and Car Crashes.
+- Build **Seaborn** charts using simple controls: distributions, relationships, categories, heatmaps, and pairplots.
+- Recreate similar visualization ideas with **Matplotlib** to understand the lower-level plotting API.
 - Compare **Seaborn vs Matplotlib** side by side.
 - Save figures to a **gallery** and export PNGs or a ZIP archive.
 
@@ -24,9 +24,9 @@ An interactive **Streamlit** lab to learn and compare **Seaborn** and **Matplotl
 
 | Tab | Purpose |
 |:---|:--------|
-| **Overview** | Dataset health check: sample, dtypes, missingness, and a small correlation view. |
-| **Seaborn builder** | UI-driven Seaborn plots + auto-updating Python snippet. |
-| **Matplotlib builder** | Low-level Matplotlib plots with control over axes, grids, and layout. |
+| **Overview** | Dataset health check: sample rows, dtypes, missingness, and a small correlation view. |
+| **Seaborn builder** | UI-driven Seaborn plots with an auto-updating Python snippet. |
+| **Matplotlib builder** | Lower-level Matplotlib plots with control over axes, grids, and layout. |
 | **Compare** | Same visualization idea shown with Seaborn and Matplotlib. |
 | **Gallery** | Saved figures, PNG download, and ZIP export. |
 
@@ -49,28 +49,28 @@ Datasets are pulled from **Seaborn’s built-in catalog**:
 ## 📸 Dashboard preview
 
 <p align="center">
-  <img src="assets/seaborn-tips-total-bill-hist-sex.png" alt="Seaborn histogram (tips dataset)" />
+  <img src="assets/seaborn-tips-total-bill-hist-sex.png" alt="Seaborn histogram using the tips dataset" />
 </p>
 
 <p align="center">
-  <img src="assets/seaborn-tips-total-bill-vs-tip-scatter.png" alt="Seaborn scatter (tips dataset)" />
+  <img src="assets/seaborn-tips-total-bill-vs-tip-scatter.png" alt="Seaborn scatter plot using the tips dataset" />
 </p>
 
 <p align="center">
-  <img src="assets/matplotlib-iris-sepal-length-hist.png" alt="Matplotlib histogram (iris dataset)" />
+  <img src="assets/matplotlib-iris-sepal-length-hist.png" alt="Matplotlib histogram using the iris dataset" />
 </p>
 
 <p align="center">
-  <img src="assets/compare-hist-kde-tips.png" alt="Compare: Seaborn vs Matplotlib histogram + KDE (tips)" />
+  <img src="assets/compare-hist-kde-tips.png" alt="Seaborn and Matplotlib histogram comparison using the tips dataset" />
 </p>
 
 ---
 
-## 🚀 Quick start (local)
+## 🚀 Quick start
 
-### Option A — Windows (PowerShell)
+### Option A — Windows PowerShell
 
-```bash
+```powershell
 git clone https://github.com/tarekmasryo/seaborn-matplotlib-visual-lab.git
 cd seaborn-matplotlib-visual-lab
 
@@ -80,9 +80,8 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 python -m pip install -U pip
 python -m pip install -r requirements.txt
-python -m pip install -r requirements-dev.txt
 
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
 Open: http://localhost:8501
@@ -98,20 +97,28 @@ source .venv/bin/activate
 
 python -m pip install -U pip
 python -m pip install -r requirements.txt
-python -m pip install -r requirements-dev.txt
 
-streamlit run app.py
+python -m streamlit run app.py
 ```
+
+Open: http://localhost:8501
 
 ---
 
 ## ✅ Tooling & workflow
 
 This repo ships with lightweight quality gates:
-- **ruff** for linting/formatting
+
+- **ruff** for linting and formatting
 - **pytest** for smoke tests
 - **pre-commit** hooks for local consistency
-- **GitHub Actions** workflows under `.github/workflows/` to validate PRs
+- **GitHub Actions** workflows under `.github/workflows/` to validate PRs and Docker builds
+
+Install development dependencies:
+
+```bash
+python -m pip install -r requirements-dev.txt
+```
 
 ### Lint & format
 
@@ -123,10 +130,10 @@ python -m ruff format .
 ### Tests
 
 ```bash
-python -m pytest -q
+python -m pytest tests -q
 ```
 
-### Pre-commit (recommended)
+### Pre-commit
 
 ```bash
 pre-commit install
@@ -141,11 +148,11 @@ Read the case study: [CASE_STUDY.md](CASE_STUDY.md)
 
 ---
 
-## 📦 Docker (optional)
+## 📦 Docker
 
 ```bash
 docker build -t visual-lab .
-docker run -p 8501:8501 visual-lab
+docker run --rm -p 8501:8501 visual-lab
 ```
 
 Open: http://localhost:8501
@@ -157,19 +164,24 @@ Open: http://localhost:8501
 ```text
 .
 ├─ app.py
+├─ visual_lab_core.py      # Pure helpers tested outside Streamlit
 ├─ requirements.txt
 ├─ requirements-dev.txt
 ├─ CHANGELOG.md
+├─ CASE_STUDY.md
+├─ Dockerfile
 ├─ tests/
 ├─ assets/                 # README screenshots
-└─ .github/workflows/      # CI workflow
+└─ .github/workflows/      # CI workflows
 ```
 
 ---
 
 ## 🧠 Notes
-- Avoid expensive work at import-time; keep heavy work inside functions. This keeps tests fast and CI stable.
+
+- Avoid expensive work at import time; keep heavy work inside functions. This keeps tests fast and CI stable.
 - For major dependency bumps, run the app and click through all tabs before merging.
+- If Seaborn’s online dataset catalog is unavailable, the app uses a small fallback dataset so the interface remains usable.
 
 ---
 

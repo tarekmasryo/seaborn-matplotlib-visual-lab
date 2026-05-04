@@ -18,7 +18,7 @@ Learning data visualization is usually split between two extremes: high-level Se
 - **One-click datasets:** load classic Seaborn example datasets (tips, penguins, flights, iris, diamonds sample, titanic, car_crashes).
 - **Offline-friendly fallback:** if Seaborn’s online dataset catalog cannot be reached, fall back to a small built-in dataset to keep the UI usable.
 - **Export-first design:** every chart can be saved to a local gallery and exported (PNG / ZIP) without manual code edits.
-- **Production hygiene:** Ruff + pytest + pre-commit + GitHub Actions for consistent formatting and smoke tests.
+- **Engineering hygiene:** Ruff + pytest + pre-commit + GitHub Actions for consistent formatting and smoke tests.
 
 ## Results
 An interactive visualization lab that supports:
